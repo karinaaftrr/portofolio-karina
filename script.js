@@ -6,9 +6,7 @@ if (navbar) {
   }, { passive: true });
 }
 
-const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-link');
-
 const currentPath = window.location.pathname.split("/").pop();
 
 navLinks.forEach(link => {
@@ -76,7 +74,6 @@ if (typedEl) {
 
   function type() {
     const current = roles[roleIndex];
-
     charIndex += isDeleting ? -1 : 1;
 
     typedEl.textContent = current.substring(0, charIndex);
@@ -151,3 +148,25 @@ if (statNums.length > 0) {
 
   statNums.forEach(el => statObserver.observe(el));
 }
+
+const themeBtn = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const savedTheme = localStorage.getItem('theme') || 'light';
+
+document.documentElement.dataset.theme = savedTheme === 'dark' ? 'dark' : '';
+if (themeIcon) {
+  themeIcon.className = savedTheme === 'dark'
+    ? 'fa-solid fa-sun'
+    : 'fa-solid fa-moon';
+}
+
+if (themeBtn) {
+  themeBtn.addEventListener('click', () => {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    document.documentElement.dataset.theme = isDark ? '' : 'dark';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+    themeIcon.className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+  });
+}
+
+
