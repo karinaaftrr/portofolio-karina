@@ -1,19 +1,23 @@
 const navbar = document.getElementById('navbar');
 
 if (navbar) {
-  window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
-  }, { passive: true });
+  window.addEventListener(
+    'scroll',
+    () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    },
+    { passive: true }
+  );
 }
 
 const navLinks = document.querySelectorAll('.nav-link');
-const currentPath = window.location.pathname.split("/").pop();
+const currentPath = window.location.pathname.split('/').pop();
 
 navLinks.forEach(link => {
   const href = link.getAttribute('href');
   link.classList.remove('active');
 
-  if (currentPath === href || (currentPath === "" && href === "index.html")) {
+  if (currentPath === href || (currentPath === '' && href === 'index.html')) {
     link.classList.add('active');
   }
 });
@@ -46,14 +50,17 @@ navLinks.forEach(link => {
 const revealEls = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
 
 if (revealEls.length > 0) {
-  const revealObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.12 });
+  const revealObserver = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
 
   revealEls.forEach(el => revealObserver.observe(el));
 }
@@ -62,7 +69,7 @@ const typedEl = document.getElementById('typed-text');
 
 if (typedEl) {
   const roles = [
-    'UI/UX Enthusiast',
+    'IT Enthusiast',
     'Web Developer',
     'CS Student at Unila',
     'Project Manager'
@@ -74,8 +81,8 @@ if (typedEl) {
 
   function type() {
     const current = roles[roleIndex];
-    charIndex += isDeleting ? -1 : 1;
 
+    charIndex += isDeleting ? -1 : 1;
     typedEl.textContent = current.substring(0, charIndex);
 
     let delay = isDeleting ? 50 : 90;
@@ -105,8 +112,11 @@ if (skillCards.length > 0) {
       const dx = (e.clientX - rect.left - rect.width / 2) / (rect.width / 2);
       const dy = (e.clientY - rect.top - rect.height / 2) / (rect.height / 2);
 
-      card.style.transform =
-        `translateY(-6px) rotateX(${-dy * 7}deg) rotateY(${dx * 7}deg)`;
+      card.style.transform = `
+        translateY(-6px)
+        rotateX(${-dy * 7}deg)
+        rotateY(${dx * 7}deg)
+      `;
     });
 
     card.addEventListener('mouseleave', () => {
@@ -119,32 +129,35 @@ if (skillCards.length > 0) {
 const statNums = document.querySelectorAll('.stat-num');
 
 if (statNums.length > 0) {
-  const statObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
+  const statObserver = new IntersectionObserver(
+    entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
 
-      const el = entry.target;
-      const raw = el.textContent.trim();
-      const match = raw.match(/^(\d+)(\D*)$/);
+        const el = entry.target;
+        const raw = el.textContent.trim();
+        const match = raw.match(/^(\d+)(\D*)$/);
 
-      if (!match) return;
+        if (!match) return;
 
-      const target = parseInt(match[1], 10);
-      const suffix = match[2];
+        const target = parseInt(match[1], 10);
+        const suffix = match[2];
 
-      let current = 0;
-      const step = Math.ceil(target / 30);
+        let current = 0;
+        const step = Math.ceil(target / 30);
 
-      const interval = setInterval(() => {
-        current = Math.min(current + step, target);
-        el.textContent = current + suffix;
+        const interval = setInterval(() => {
+          current = Math.min(current + step, target);
+          el.textContent = current + suffix;
 
-        if (current >= target) clearInterval(interval);
-      }, 40);
+          if (current >= target) clearInterval(interval);
+        }, 40);
 
-      statObserver.unobserve(el);
-    });
-  }, { threshold: 0.5 });
+        statObserver.unobserve(el);
+      });
+    },
+    { threshold: 0.5 }
+  );
 
   statNums.forEach(el => statObserver.observe(el));
 }
@@ -169,4 +182,42 @@ if (themeBtn) {
   });
 }
 
+const contactForm = document.getElementById('contact-form');
+const responseMsg = document.getElementById('response-message');
+const submitBtn = document.getElementById('submit-btn');
 
+contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    submitBtn.innerHTML = '<span>Sending...</span>';
+    submitBtn.disabled = true;
+
+    try {
+        const response = await fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            responseMsg.innerText = "Pesan berhasil dikirim ke Karina!";
+            responseMsg.style.color = "#759EF6"; 
+            responseMsg.style.display = "block";
+            contactForm.reset(); 
+        } else {
+            responseMsg.innerText = "Gagal mengirim pesan, coba lagi nanti.";
+            responseMsg.style.color = "#ff4d4d";
+            responseMsg.style.display = "block";
+        }
+    } catch (error) {
+        responseMsg.innerText = "Terjadi kesalahan koneksi.";
+        responseMsg.style.color = "#ff4d4d";
+        responseMsg.style.display = "block";
+    } finally {
+        submitBtn.innerHTML = '<span>Send Message</span> <i class="fa-solid fa-paper-plane ms-2"></i>';
+        submitBtn.disabled = false;
+    }
+});
