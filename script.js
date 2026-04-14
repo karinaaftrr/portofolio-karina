@@ -201,7 +201,6 @@ contactForm.addEventListener('submit', async function(e) {
                 'Accept': 'application/json'
             }
         });
-
         if (response.ok) {
             responseMsg.innerText = "Pesan berhasil dikirim ke Karina!";
             responseMsg.style.color = "#759EF6"; 
